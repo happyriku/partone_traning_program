@@ -32,21 +32,54 @@ mysql \
 
 ---
 
-### 102-mysqlのデーバーベース一覧の表示方法
+### 102-mysqlのデーターベース一覧の表示方法
 
-```bash
-
-
+```sql
+SHOW DATABASES;
 ```
 
-### mysql -h localhost -P 10202 -u uzone -ppassword uzone
-### ユーザ名uzone, password: uzone, localhostでport10202からmysqlにアクセスする
+<br>
 
-### show database;
-### databaseの中身を表示する
+**一例**
+```sql
+MySQL [uzone]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
+| uzone              |
++--------------------+
+3 rows in set (0.001 sec)
+```
 
-### SHOW TABLES;
-### databaseに含まれるtableを表示する
+<br>
 
-### show table status;
-### tableの名前以外
+---
+
+### 103-mysqlのデーターベースのテーブル一覧の表示方法
+```sql
+SHOW TABLES;
+```
+
+<br>
+
+**一例**
+```sql
+MySQL [uzone]> SHOW TABLES;
++-------------------------------+
+| Tables_in_uzone               |
++-------------------------------+
+| admins                        |
+| cache                         |
+| cache_locks                   |
+~~~
+| wk_base_data                  |
++-------------------------------+
+109 rows in set (0.002 sec)
+```
+
+> 名前以外の情報を表示させたい時は，`SHOW TABLE STATUS;`
+<br>
+
+---
