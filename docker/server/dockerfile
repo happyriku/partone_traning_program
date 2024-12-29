@@ -4,6 +4,8 @@ FROM ubuntu:22.04
 # 環境変数設定
 ENV DEBIAN_FRONTEND=noninteractive
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # 必要なパッケージをインストール
 RUN apt update && apt -y upgrade && \
     apt -y install software-properties-common && \
