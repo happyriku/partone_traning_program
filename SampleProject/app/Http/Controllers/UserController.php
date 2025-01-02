@@ -26,13 +26,19 @@ class UserController extends Controller
 	public function store(Request $request)
 	{
 		$validated = $request->validate([
-			'name'=> 'required|string|max:255', 
-			'email'=> 'required|email|unique:users', 
-			'password' => 'required|string|min:8',
+			'name'=> 'required|string|max:50',
+			'birthday'=> 'required|date',
+			'sex'=> 'required|in:male, female, other',
+			'address'=> 'required|string|max:2048',
+			'email'=> 'required|email|unique:users|max:320', 
+			'password' => 'required|string|min:40',
 		]);
 
 		$user = User::create([
 		'name'=> $validated['name'],
+		'birthday'=> $validated['birthday'],
+		'sex'=> $validated['sex'],
+		'address'=> $validated['address'],
 		'email'=> $validated['email'],
 		'password'=> bcrypt($validated['password']),
 		]);
@@ -48,8 +54,7 @@ class UserController extends Controller
 			return response()->json(['message'=> 'User not found'], 404);
 
 		$validated = $request->validate([
-			'name'=> 'sometimes|string|max:255',
-			'email'=> 'sometimes|email|unique:users, email,'. $id,
+			//'email'=> 'sometimes|email|unique:users, email,'. $id,
 			'password'=> 'sometimes|string|min:8',
 		]);
 
