@@ -10,15 +10,15 @@
 
 ```bash
 # mysqlサーバーのホスト名称
-HOSTNAME="localhost"
+HOSTNAME="db"
 # mysqlサーバーのポート番号
-PORT_NUMBER="10202"
+PORT_NUMBER="3306"
 # mysqlサーバーのユーザ-名
-USERNAME="uzone"
+USERNAME="laravel_user"
 # mysqlサーバーのユーザーに対するパスワード 
-PASSWORD="password"
+PASSWORD="laravel_password"
 # mysqlサーバーのデータベース名
-DATABASE_NAME="uzone"
+# DATABASE_NAME="uzone"
 
 mysql \
   -h $HOSTNAME \
@@ -84,7 +84,7 @@ MySQL [uzone]> SHOW TABLES;
 
 ---
 
-### 104-mysqlのselect文の使い方
+### 104-mysqlのselect文の使い方①
 ```sql
 SELECT カラム名 FROM テーブル名;
 ```
@@ -105,6 +105,53 @@ MySQL [uzone]> SELECT * FROM cars;
 539 rows in set (0.006 sec)
 ```
 
+<br>
+
+### mysqlのselect文の使い方②
+```sql
+SELECT カラム名 FROM テーブル名\G
+```
+
+<br>
+
+**一例**
+```sql
+mysql> SELECT * FROM users\G
+*************************** 1. row ***************************
+               id: 1
+             name: Test User
+         birthday: 1995-12-05 14:27:42
+              sex: 1
+          address: 7351 Doris Lock Apt. 070
+Durganshire, NV 02449
+            email: test@example.com
+email_verified_at: 2025-01-02 08:14:57
+         password: $2y$12$jnPkjG6ZBVCBc8sMX7gK1uIqPQFROGoeQ9ELPGd6BoG1w4Hi.YXYK
+       created_at: 2025-01-02 08:14:57
+       updated_at: 2025-01-02 08:14:57
+           status: 1
+          code_id: NULL
+   remember_token: Se2GU4yYHq
+*************************** 2. row ***************************
+~~~
+
+*************************** 11. row ***************************
+               id: 11
+             name: Crawford Johns
+         birthday: 2003-08-23 00:36:38
+              sex: 1
+          address: 34369 Stiedemann Roads Suite 481
+Celestinomouth, NE 61965-2806
+            email: daija.dietrich@example.net
+email_verified_at: 2025-01-02 08:15:45
+         password: $2y$12$UCYB0VZ563mEfGTFGoT1DuP8Qx5PndxoUsBQFj6W6lAiYXoKYNuUe
+       created_at: 2025-01-02 08:15:45
+       updated_at: 2025-01-02 08:15:45
+           status: 1
+          code_id: NULL
+   remember_token: L9fTlUY2kT
+11 rows in set (0.11 sec)
+```
 <br>
 
 **WHERE句** (検索方法)

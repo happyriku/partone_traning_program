@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User; //import user model
 
 class UserController extends Controller
 {
@@ -12,7 +13,7 @@ class UserController extends Controller
 		$users = User::all();
 		return response()->json($users);
 	}
-	
+
 	// Get specific user information
 	public function show($id)
 	{
@@ -23,28 +24,36 @@ class UserController extends Controller
 	}
 
 	//creating a new user
-	public function store(Request $request)
-	{
-		$validated = $request->validate([
-			'name'=> 'required|string|max:50',
-			'birthday'=> 'required|date',
-			'sex'=> 'required|in:male, female, other',
-			'address'=> 'required|string|max:2048',
-			'email'=> 'required|email|unique:users|max:320', 
-			'password' => 'required|string|min:40',
-		]);
+    public function store(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:50',
+                'birthday' => 'required|date_format:Y-m-d',
+                'sex' => 'required|in:0,1,woman,man',
+                'address' => 'required|string|max:2048',
+                'email' => 'required|email|unique:users|max:320',
+                'password' => 'required|string|min:8',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed:', $e->errors());
+            throw $e;
+        }
 
-		$user = User::create([
-		'name'=> $validated['name'],
-		'birthday'=> $validated['birthday'],
-		'sex'=> $validated['sex'],
-		'address'=> $validated['address'],
-		'email'=> $validated['email'],
-		'password'=> bcrypt($validated['password']),
-		]);
+        $validated['sex'] = ($request->sex === 'woman') ? 0 : 1;
 
-		return response()->json($user, 201);
-	}
+        $user = User::create([
+            'name' => $validated['name'],
+            'birthday' => $validated['birthday'],
+            'sex' => $validated['sex'],
+            'address' => $validated['address'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+        ]);
+
+        return response()->json($user, 201);
+    }
+
 
 	//update user info
 	public function update(Request $request, $id)
