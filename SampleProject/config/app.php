@@ -123,8 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    /*-------------*/
-    'providers' => [
+     /*-------------*/
+     'providers' => [
 	    /*
 	     * Laravel Framework Service Providers...
 	     */

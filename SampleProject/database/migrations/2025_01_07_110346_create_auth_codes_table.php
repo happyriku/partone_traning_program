@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('auth_codes', function (Blueprint $table) {
-              $table->id();
-              $table->integer('code');
-              $table->timestamps();
-              $table->boolean('status')->default(true);
-              $table->integer('count');
+		$table->id();
+		$table->integer('code');
+            	$table->timestamps();
+		$table->boolean('status')->default(true);
+		$table->integer('count');
         });
     }
 
