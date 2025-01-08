@@ -6,6 +6,6 @@ use App\Http\Controllers\UserController; //import namespace
 
 //make endpoint for new user
 
-Route::middleware('api')->group(function () {
+Route::prefix('api')->group(function () {
 	Route::post('/users', [UserController::class, 'store']);
 });

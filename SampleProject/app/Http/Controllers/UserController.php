@@ -30,7 +30,7 @@ class UserController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:50',
                 'birthday' => 'required|date_format:Y-m-d',
-                'sex' => 'required|in:woman,man,女性,男性,Non-binary,ノンバイナリー',
+                'sex' => 'required|in:0,1,female,male',
                 'address' => 'required|string|max:2048',
                 'email' => 'required|email|unique:users|max:320',
                 'password' => 'required|string|min:8',
@@ -40,14 +40,7 @@ class UserController extends Controller
             throw $e;
         }
 
-	//Assigning numbers to gender
-	if ($request->sex === 'woman' || $request->sex === '女性')
-		$validated['sex'] = 0;
-	else if ($request->sex === 'man' || $request->sex === '男性')
-		$validated['sex'] = 1;
-	else
-		$validated['sex'] = 2;
-
+        $validated['sex'] = ($request->sex === 'woman') ? 0 : 1;
 
         $user = User::create([
             'name' => $validated['name'],
