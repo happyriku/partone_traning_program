@@ -74,7 +74,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'birthday' => 'datetime',
-        'sex' => 'boolean',
+        'sex' => 'integer',
         'status' => 'boolean',
     ];
 
