@@ -3,9 +3,32 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Mail\TestEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 
 class AuthCodesController extends Controller
 {
+    public function send_auth_code(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        //generate an authorization code
+        $authCode = mt_rand(100000, 999999);
+
+        //store cache
+        Cache::put('auth_code_'.$request->email, $authCode, now()->addMinutes(5));
+
+        //send email
+        Mail::to($request->email)->send(new TestEmail($authCode));
+
+        return response()->json([
+            'message' => 'Authentication code sent successfully.',
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
