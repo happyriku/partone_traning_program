@@ -14,7 +14,7 @@ class MemberInfoController
         if (!$user)
             return response()->json(['message' => 'No matching member information found'], 400);
         $fields = $request->input('fields', []);
-        if (!$fields || !is_array($fields))
+        if (!is_array($fields))
             return response()->json(['message' => 'Invalid fields request.'], 400);
         $user_data = $user->only($fields);
         return response()->json($user_data, 200);
