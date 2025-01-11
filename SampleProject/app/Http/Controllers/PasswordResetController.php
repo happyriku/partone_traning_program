@@ -16,8 +16,10 @@ class PasswordResetController extends Controller
         $email = $request->email;
         $user = User::where('email', $email)->first();
         if (!$user)
-            return response()->json([
-                'message' => 'This email address is not linked to a Uzone account']);
+            return response()
+                    ->json([
+                        'message' => 'This email address is not linked to a Uzone account'
+                    ]);
 
         $token = Hash::make(Str::random(60));
         $reset_url = 'http://localhost:8000/password-reset/'.$token;
