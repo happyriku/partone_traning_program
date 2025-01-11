@@ -13,7 +13,7 @@ class MemberInfoController
         $user = User::where('user_id', $user_id)->first();
         if (!$user)
             return response()->json(['message' => 'No matching member information found'], 400);
-        $fields = $request->input('fields');
+        $fields = $request->input('fields', []);
         if (!$fields || !is_array($fields))
             return response()->json(['message' => 'Invalid fields request.'], 400);
         $user_data = $user->only($fields);
