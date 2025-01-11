@@ -17,6 +17,7 @@ class MemberInfoController
         if (!is_array($fields))
             return response()->json(['message' => 'Invalid fields request.'], 400);
         $user_data = $user->only($fields);
+
         return response()->json($user_data, 200);
     }
 }
