@@ -4,61 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Mail\TestEmail;
+use App\Models\AuthCode;
+use App\Jobs\DeleteAuthCodeDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class AuthCodesController extends Controller
 {
-    public function send_auth_code(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
-        //generate an authorization code
-        $authCode = mt_rand(100000, 999999);
-
-        //store cache
-        Cache::put('auth_code_'.$request->email, $authCode, now()->addMinutes(5));
-
-        //send email
-        Mail::to($request->email)->send(new TestEmail($authCode));
-
-        return response()->json([
-            'message' => 'Authentication code sent successfully.',
-        ]);
-    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-	public function index()
+    public function index()
 	{
-		//get all data in the auch codes table
+        //get all data in the auch codes table
 		$authCodes = AuthCode::all();
 		return response()->json($authCodes);
 	}
 
-	/** store a newly created resource in storage.
-	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request)
-	{
-		// input data validation
-		$validatedData = $request->validate([
-			'code' => 'required|integer',
-			'status' => 'required|boolean',
-			'count' => 'nullable|integer',
-		]);
+    public function send_auth_code(Request $request)
+    {
+        // validate email
+        try{
+            $validated = $request->validate([
+                'email' => 'required|email|unique:users|max:320',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('validation failed:', $e->errors());
+            throw $e;
+        }
 
-		// store data
-		$authCode = Auth::create($validatedData);
-		return response()->json($authCode, 201);
-	}
+        //generate an authorization code
+        $authCode = mt_rand(100000, 999999);
+
+        //store database
+        AuthCode::create([
+        'email' => $request->email,
+        'code' => $authCode,
+        'expires_at' => Carbon::now()->addMinutes(5),
+        'user_id' => $request->cookie('user_id'),
+        ]);
+
+        DeleteAuthCodeDatabase::dispatch(AuthCode::latest()->first()->id)->delay(now()->addMinutes(5));
+        //send email
+        Mail::to($request->email)->send(new TestEmail($authCode));
+
+        return response()->json([
+            'message' => 'Authentication code sent successfully.'], 200);
+    }
+
+	// /** store a newly created resource in storage.
+	//  *
+    //  * @param \Illuminate\Http\Request $request
+	//  * @return \Illuminate\Http\Response
+	//  */
+	// public function store(Request $request)
+	// {
+	// 	// input data validation
+	// 	$validatedData = $request->validate([
+	// 		'code' => 'required|integer',
+	// 		'status' => 'required|boolean',
+	// 		'count' => 'nullable|integer',
+	// 	]);
+
+	// 	// store data
+	// 	$authCode = Auth::create($validatedData);
+	// 	return response()->json($authCode, 201);
+	// }
 
 	/**
 	 * Display the specified resource.
@@ -86,7 +102,6 @@ class AuthCodesController extends Controller
 		$validatedData = $request->validate([
 			'code' => 'sometimes|required|integer',
 			'status' => 'sometimes|required|boolean',
-			'count' => 'nullable|integer',
 		]);
 
 		//update data

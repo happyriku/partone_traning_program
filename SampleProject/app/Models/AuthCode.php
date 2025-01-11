@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class auth_codes extends Model
+class AuthCode extends Model
 {
     use HasFactory;
 
@@ -42,9 +43,11 @@ class auth_codes extends Model
      * @var array
      */
     protected $fillable = [
-        'code',
-        'status',
-        'count',
+	    'user_id',
+	    'code',
+	    'email',
+	    'expires_at',
+	    'status',
     ];
 
     /**
@@ -54,6 +57,5 @@ class auth_codes extends Model
      */
     protected $attributes = [
         'status' => false,
-        'count' => 0,
     ];
 }
