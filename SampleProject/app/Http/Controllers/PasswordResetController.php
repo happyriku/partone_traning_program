@@ -21,7 +21,7 @@ class PasswordResetController extends Controller
 
         $token = Hash::make(Str::random(60));
         $reset_url = 'http://localhost:8000/password-reset/'.$token;
-        //send email
+        // send email
         Mail::to($request->email)->send(new PasswordResetEmail($reset_url));
 
         return response()->json([
