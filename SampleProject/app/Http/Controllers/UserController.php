@@ -56,6 +56,7 @@ class UserController extends Controller
 		    $validated['sex'] = 2;
 
         $user = User::create([
+            'user_id' => $request->cookie('user_id'),
             'name' => $validated['name'],
             'birthday' => $validated['birthday'],
             'sex' => $validated['sex'],
