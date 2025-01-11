@@ -26,7 +26,11 @@ class PasswordResetController extends Controller
         // send email
         Mail::to($request->email)->send(new PasswordResetEmail($reset_url));
 
-        return response()->json([
-            'message' => 'Password reset url sent successfully.'], 200);
+        return response()
+                ->json(
+                    [
+                        'message' => 'Password reset url sent successfully.'
+                    ],
+                    200);
     }
 }
