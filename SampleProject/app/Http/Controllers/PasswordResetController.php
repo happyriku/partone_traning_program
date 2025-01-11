@@ -11,6 +11,8 @@ use App\Mail\PasswordResetEmail;
 
 class PasswordResetController extends Controller
 {
+    private const PASSWORD_RESET_URL = "http://localhost:8000/password-reset";
+
     public function send_password_reset_link(Request $request)
     {
         $email = $request->email;
@@ -22,7 +24,7 @@ class PasswordResetController extends Controller
                     ]);
 
         $token = Hash::make(Str::random(60));
-        $reset_url = 'http://localhost:8000/password-reset/'.$token;
+        $reset_url = self::PASSWORD_RESET_URL.$token;
         // send email
         Mail::to($request->email)->send(new PasswordResetEmail($reset_url));
 
