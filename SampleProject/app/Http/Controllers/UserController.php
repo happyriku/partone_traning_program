@@ -28,6 +28,7 @@ class UserController extends Controller
     {
         try{
             $validated = $request->validate([
+                'user_id' => 'required',
                 'name' => 'required|string|max:50',
                 'birthday' => 'required|date_format:Y-m-d',
                 'sex' => 'required|in:woman,man,Non-binary',
