@@ -28,7 +28,6 @@ class UserController extends Controller
     {
         try{
             $validated = $request->validate([
-                'user_id' => 'required',
                 'name' => 'required|string|max:50',
                 'birthday' => 'required|date_format:Y-m-d',
                 'sex' => 'required|in:woman,man,Non-binary',
@@ -47,17 +46,26 @@ class UserController extends Controller
             return response()->json(['error' => 'Invalid email format or domain'], 422);
         }
 
-	    //\Log::info('sex : {value}', ['value' => $request->sex]);
 	    //allocate index for sex
-	    if ($request->sex === 'woman')
-		    $validated['sex'] = 0;
-	    else if ($request->sex === 'man')
-		    $validated['sex'] = 1;
-	    else if ($request->sex === 'Non-binary')
-		    $validated['sex'] = 2;
+        switch ($request->sex)
+        {
+            case 'woman':
+                $validated['sex'] = 0;
+                break;
+            case 'man':
+                $validated['sex'] = 1;
+                break;
+            case 'Non-binary':
+                $validated['sex'] = 2;
+                break;
+        }
+
+        //create cookieID and userId
+        $cookieID = bin2hex(random_bytes(16));
+        $userID = uniqid('user_', true);
 
         $user = User::create([
-            'user_id' => $request->cookie('user_id'),
+            'user_id' => $userID,
             'name' => $validated['name'],
             'birthday' => $validated['birthday'],
             'sex' => $validated['sex'],
@@ -66,7 +74,9 @@ class UserController extends Controller
             'password' => $validated['password'],
         ]);
 
-        return response()->json($user, 201);
+        return response()
+                ->json($user, 201)
+                ->cookie('cookieID', $cookieID, 60 * 24 * 7);
     }
 
 

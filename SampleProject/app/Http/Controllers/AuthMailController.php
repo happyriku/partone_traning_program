@@ -17,7 +17,10 @@ class AuthMailController extends Controller
                         ->where('expires_at', '>', Carbon::now())
                         ->first();
         if ($authcode)
+        {
+            AuthCode::where('user_id', $user_id)->delete();
             return response()->json(['message' => 'Email verification successful.'], 200);
+        }
         else
         {
             AuthCode::where('user_id', $user_id)->delete();
