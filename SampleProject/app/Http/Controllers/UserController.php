@@ -7,22 +7,6 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    //Get a list of all users
-    public function index()
-    {
-        $users = User::all();
-        return response()->json($users);
-    }
-
-    //Get specific user information
-    public function show($id)
-    {
-        $user = User::find($id);
-        if (!$user)
-            return response()->json(['message' => 'User not found'], 404);
-        return response()->json($user);
-    }
-
     //creating a new user
     public function store(Request $request)
     {
@@ -60,13 +44,9 @@ class UserController extends Controller
                 break;
         }
 
-        //create cookieID and userId
-        $cookieID = bin2hex(random_bytes(16));
-        $userID = uniqid('user_', true);
-
         $user = User::create([
-            'user_id' => $userID,
             'name' => $validated['name'],
+            'user_id' => $request->cookie('user_id'),
             'birthday' => $validated['birthday'],
             'sex' => $validated['sex'],
             'address' => $validated['address'],
@@ -75,8 +55,7 @@ class UserController extends Controller
         ]);
 
         return response()
-                ->json($user, 201)
-                ->cookie('cookieID', $cookieID, 60 * 24 * 7);
+                ->json($user, 201);
     }
 
 
@@ -92,29 +71,5 @@ class UserController extends Controller
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
             return false;
         return true;
-    }
-
-    //update user info
-    public function update(Request $request, $id)
-    {
-        $user = User::find($id);
-        if (!$user)
-            return response()->json(['message' => 'User not found'], 404);
-
-        $validated = $request->validate([
-            'password' => 'sometimes|string|min:8',
-        ]);
-
-        $user->update($validated);
-        return response()->json($user);
-    }
-
-    public function destroy($id)
-    {
-        $user = User::find($id);
-        if (!$user)
-            return response()->json(['message' => 'User not found'], 404);
-        $user->delete();
-        return response()->json(['message' => 'User deleted successfuly']);
     }
 }

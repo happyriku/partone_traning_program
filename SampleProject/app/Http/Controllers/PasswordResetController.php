@@ -31,7 +31,7 @@ class PasswordResetController extends Controller
         return response()
                 ->json(
                     [
-                        'message' => 'Password reset url sent successfully.'
+                        'message' => 'URL for password reset has been sent to your registered email address.'
                     ],
                     200);
     }

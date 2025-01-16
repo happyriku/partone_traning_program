@@ -19,12 +19,20 @@ class AuthMailController extends Controller
         if ($authcode)
         {
             AuthCode::where('user_id', $user_id)->delete();
-            return response()->json(['message' => 'Email verification successful.'], 200);
+            return response()->json(
+                                [
+                                    'message' => 'Email verification successful.'
+                                ],
+                                200);
         }
         else
-        {
+	    {
             AuthCode::where('user_id', $user_id)->delete();
-            return response()->json(['message' => 'Email verification failed.'], 400);
+            return response()->json(
+                                [
+                                    'message' => 'Email verification failed, Please enter your email address again .'
+                                ],
+                                400);
         }
     }
 }

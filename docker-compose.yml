@@ -10,6 +10,7 @@ services:
       - "8000:80" #ホストの8000ポートをコンテナの80ポートにマッピング
     volumes:
       - ./SampleProject:/var/www/html/SampleProject
+
     depends_on:
       - db
 

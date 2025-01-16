@@ -29,12 +29,28 @@ RUN apt update && apt -y upgrade && \
         php8.2-mysql \
         php8.2-gd \
         php8.2-mbstring && \
+
     apt clean && rm -rf /var/lib/apt/lists/*
 
+    
 #docker composer install
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    
 
-WORKDIR /var/www/html
+# Apache DocumentRootをLaravelのpublicディレクトリを指すように設定し，
+# Apache設定ファイルを更新する
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+COPY ./virtualhost.conf /tmp/virtualhost.conf
+
+RUN cat /tmp/virtualhost.conf >> /etc/apache2/apache2.conf
+
+# apache mod rewriteを有効にする
+RUN a2enmod rewrite
+
+WORKDIR /var/www/html/SampleProject
 
 # Apacheを起動
 ENTRYPOINT ["/bin/sh", "-c", "service apache2 restart && sleep infinity"]
